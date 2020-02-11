@@ -25,7 +25,8 @@ Suggests:
     covr (>= 3.4.0),
     urltools (>= 1.7.3),
     keyring (>= 1.1.0),
-    rcmdcheck (>= 1.3.3)
+    rcmdcheck (>= 1.3.3),
+    pkgdown (>= 1.4.1)
 URL: https://www.maxheld.de/bahelper/
 BugReports: https://github.com/maxheld83/bahelper/issues
 RoxygenNote: 7.0.2
