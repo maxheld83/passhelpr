@@ -2,8 +2,7 @@
 ^\.Rproj\.user$
 ^LICENSE\.md$
 ^codecov\.yml$
-^\.github/workflows/R-CMD-check\.yaml$
-^\.github/workflows/pr-commands\.yaml$
+^\.github/workflows/main\.yaml$
 ^_pkgdown\.yml$
 ^docs$
 ^pkgdown$
