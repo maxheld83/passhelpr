@@ -1,89 +1,36 @@
 name: CICD
 
-on:
+"on":
   - push
   - pull_request
 
 jobs:
-  R-CMD-check:
-    runs-on: ${{ matrix.config.os }}
-
-    name: ${{ matrix.config.os }} (${{ matrix.config.r }})
-
-    strategy:
-      fail-fast: false
-      matrix:
-        config:
-          - {os: windows-latest, r: '3.6'}
-          - {os: macOS-latest, r: '3.6'}
-          - {os: macOS-latest, r: 'devel'}
-          - {os: ubuntu-16.04, r: '3.2', cran: "https://demo.rstudiopm.com/all/__linux__/xenial/latest"}
-          - {os: ubuntu-16.04, r: '3.3', cran: "https://demo.rstudiopm.com/all/__linux__/xenial/latest"}
-          - {os: ubuntu-16.04, r: '3.4', cran: "https://demo.rstudiopm.com/all/__linux__/xenial/latest"}
-          - {os: ubuntu-16.04, r: '3.5', cran: "https://demo.rstudiopm.com/all/__linux__/xenial/latest"}
-          - {os: ubuntu-16.04, r: '3.6', cran: "https://demo.rstudiopm.com/all/__linux__/xenial/latest"}
-
-    env:
-      R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
-      CRAN: ${{ matrix.config.cran }}
-
+  build:
+    runs-on: ubuntu-18.04
+    container:
+      image: rstudio/r-base:3.6-bionic
     steps:
-      - uses: actions/checkout@v1
-
-      - uses: r-lib/actions/setup-r@master
-        with:
-          r-version: ${{ matrix.config.r }}
-
-      - uses: r-lib/actions/setup-pandoc@master
-
-      - name: Query dependencies
-        run:
-          Rscript -e "install.packages('remotes')" -e "saveRDS(remotes::dev_package_deps(dependencies = TRUE), 'depends.Rds', version = 2)"
-
-      - name: Cache R packages
-        if: runner.os != 'Windows'
-        uses: actions/cache@v1
-        with:
-          path: ${{ env.R_LIBS_USER }}
-          key: ${{ runner.os }}-r-${{ matrix.config.r }}-${{ hashFiles('depends.Rds') }}
-          restore-keys: ${{ runner.os }}-r-${{ matrix.config.r }}-
-
-      - name: Install system dependencies
-        if: runner.os == 'Linux'
-        env:
-          RHUB_PLATFORM: linux-x86_64-ubuntu-gcc
+      - name: Checkout Repository
+        uses: actions/checkout@v1
+      - name: Install System Dependencies
         run: |
-          Rscript -e "remotes::install_github('r-hub/sysreqs')"
-          sysreqs=$(Rscript -e "cat(sysreqs::sysreq_commands('DESCRIPTION'))")
-          sudo -s eval "$sysreqs"
-
-      - name: Install dependencies
-        run:
-          Rscript -e "library(remotes)" -e "update(readRDS('depends.Rds'))" -e "remotes::install_cran('rcmdcheck')"
-
-      - name: Check
-        run:
-          Rscript -e "rcmdcheck::rcmdcheck(args = '--no-manual', error_on = 'warning', check_dir = 'check')"
-
-      - name: Upload check results
-        if: failure()
-        uses: actions/upload-artifact@master
-        with:
-          name: ${{ runner.os }}-r${{ matrix.config.r }}-results
-          path: check
-
-      - name: Test coverage
-        if: matrix.config.os == 'ubuntu-16.04' && matrix.config.r == '3.6'
-        run:
-          Rscript -e 'covr::codecov(token = "${{secrets.CODECOV_TOKEN}}")'
-
-      - name: Document package
-        if: matrix.config.os == 'ubuntu-16.04' && matrix.config.r == '3.6'
-        run:
+          sudo apt-get update && apt-get install -y --no-install-recommends \
+          libxml2-dev \
+          libssl-dev \
+          libcurl4-openssl-dev
+      - name: Install Package Dependencies
+        run: |-
+          Rscript -e "install.packages('remotes', repos = 'https://demo.rstudiopm.com/all/__linux__/bionic/latest')"
+          Rscript -e "remotes::install_deps(dependencies = TRUE, repos = 'https://demo.rstudiopm.com/all/__linux__/bionic/latest')"
+      - name: Check Package
+        run: Rscript -e "rcmdcheck::rcmdcheck(error_on = 'error', check_dir = 'check')"
+      - name: Run Code Coverage
+        run: Rscript -e "covr::codecov(quiet = FALSE, commit = '$GITHUB_SHA', branch = '$GITHUB_REF', token = '$${{ secrets.CODECOV_TOKEN }}')"
+      - name: Document Package
+        run: |
           Rscript -e "pkgdown::build_site(override = list(devel = FALSE, external = FALSE))"
-
-      - name: Deploy pkgdown site to GitHub Pages
-        if: matrix.config.os == 'ubuntu-16.04' && matrix.config.r == '3.6' && github.ref == 'refs/heads/master'
+      - name: Deploy to GitHub Pages
+        if: github.ref == 'refs/heads/master'
         uses: maxheld83/ghpages@v0.2.0
         env:
           BUILD_DIR: docs
