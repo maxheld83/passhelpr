@@ -22,7 +22,13 @@ Language: en
 LazyData: true
 Roxygen: list(markdown = TRUE)
 Suggests: 
-    covr
+    covr (>= 3.4.0),
+    urltools (>= 1.7.3),
+    keyring (>= 1.1.0),
+    rcmdcheck (>= 1.3.3)
 URL: https://www.maxheld.de/bahelper/
 BugReports: https://github.com/maxheld83/bahelper/issues
 RoxygenNote: 7.0.2
+Imports: 
+    httr (>= 1.4.1),
+    getPass (>= 0.2.2)
