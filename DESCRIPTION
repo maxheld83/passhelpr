@@ -15,7 +15,7 @@ Authors@R:
         role = c("cph", "fnd")
       )
     )
-Description: Takes passwords from (secret) environment variables, otherwise prompts for them interactively and stores them in the system keychain.
+Description: Gets passwords from, in this order, environment variables, system keychains and interactive prompts.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Language: en
