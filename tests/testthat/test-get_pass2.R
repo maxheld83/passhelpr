@@ -21,7 +21,7 @@ test_that("password from keychain", {
     object = get_pass2(
       user = "info@maxheld.de",
       service = "testing.maxheld.de",
-      keyring = "passhelpr-testing"
+      keyring = "passhelpr-testing2"
     ),
     expected = "foo"
   )
