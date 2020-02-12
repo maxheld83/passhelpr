@@ -1,7 +1,7 @@
 # passhelpr
 
 <!-- badges: start -->
-[![R build status](https://github.com/maxheld83/passhelpr/workflows/R-CMD-check/badge.svg)](https://github.com/maxheld83/passhelpr/actions)
+[![R build status](https://github.com/maxheld83/passhelpr/workflows/CICD/badge.svg)](https://github.com/maxheld83/passhelpr/actions)
 [![CRAN status](https://www.r-pkg.org/badges/version/passhelpr)](https://CRAN.R-project.org/package=passhelpr)
 [![Codecov test coverage](https://codecov.io/gh/maxheld83/passhelpr/branch/master/graph/badge.svg)](https://codecov.io/gh/maxheld83/passhelpr?branch=master)
 [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
