@@ -1,4 +1,4 @@
-Package: bahelper
+Package: passhelpr
 Title: Helper functions for basic (username and password) authentication
 Version: 0.0.0.9000
 Authors@R: 
@@ -26,8 +26,8 @@ Suggests:
     rcmdcheck (>= 1.3.3),
     pkgdown (>= 1.4.1),
     testthat (>= 2.1.0)
-URL: https://www.maxheld.de/bahelper/
-BugReports: https://github.com/maxheld83/bahelper/issues
+URL: https://www.maxheld.de/passhelpr/
+BugReports: https://github.com/maxheld83/passhelpr/issues
 RoxygenNote: 7.0.2
 Imports: 
     getPass (>= 0.2.2),

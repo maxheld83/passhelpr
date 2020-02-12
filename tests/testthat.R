@@ -1,4 +1,4 @@
 library(testthat)
-library(bahelper)
+library(passhelpr)
 
-test_check("bahelper")
+test_check("passhelpr")

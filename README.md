@@ -1,9 +1,9 @@
-# bahelper
+# passhelpr
 
 <!-- badges: start -->
-[![R build status](https://github.com/maxheld83/bahelper/workflows/R-CMD-check/badge.svg)](https://github.com/maxheld83/bahelper/actions)
-[![CRAN status](https://www.r-pkg.org/badges/version/bahelper)](https://CRAN.R-project.org/package=bahelper)
-[![Codecov test coverage](https://codecov.io/gh/maxheld83/bahelper/branch/master/graph/badge.svg)](https://codecov.io/gh/maxheld83/bahelper?branch=master)
+[![R build status](https://github.com/maxheld83/passhelpr/workflows/R-CMD-check/badge.svg)](https://github.com/maxheld83/passhelpr/actions)
+[![CRAN status](https://www.r-pkg.org/badges/version/passhelpr)](https://CRAN.R-project.org/package=passhelpr)
+[![Codecov test coverage](https://codecov.io/gh/maxheld83/passhelpr/branch/master/graph/badge.svg)](https://codecov.io/gh/maxheld83/passhelpr?branch=master)
 [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
 <!-- badges: end -->
 
@@ -24,10 +24,10 @@ This package is a very thin wrapper around [{httr}](https://httr.r-lib.org), [{g
 
 ## Installation
 
-You can install the released version of {bahelper} from [GitHub](https://github.com/maxheld83/bahelper) with:
+You can install the released version of {passhelpr} from [GitHub](https://github.com/maxheld83/passhelpr) with:
 
 ``` r
-remotes::install_github("maxhed83/bahelper")
+remotes::install_github("maxhed83/passhelpr")
 ```
 
 
@@ -37,7 +37,7 @@ You can use `getpass2()` wherever you need a password for BA.
 It will return the password invisibly.
 
 ```r
-bahelper::get_pass2(
+passhelpr::get_pass2(
   user = "jane@foo-service.com", 
   service = "foo-service.com", 
   env.var = "${{secrets.FOO_SERVICE_PW}}"
