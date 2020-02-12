@@ -25,7 +25,7 @@ test_that("password from GitHub Actions", {
     # password for the below keyring is also foo
     object = get_pass2(
       user = "doesnotexist",
-      password = "${{ secrets.EXAMPLE_SECRET }}",
+      password = Sys.getenv("EXAMPLE_SECRET"),
       service = "foo-service.com"
     ),
     expected = "baz"
