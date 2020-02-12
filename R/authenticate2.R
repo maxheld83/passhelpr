@@ -12,17 +12,17 @@
 #'
 #' @export
 authenticate2 <- function(user,
+                          password = NULL,
                           type = "basic",
                           service,
-                          keyring = NULL,
-                          env_var = NULL) {
+                          keyring = NULL) {
   httr::authenticate(
     user = user,
     password = get_pass2(
       user = user,
+      password = password,
       service = service,
-      keyring = keyring,
-      env_var = env_var
+      keyring = keyring
     ),
     type = type
   )

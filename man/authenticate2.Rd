@@ -6,27 +6,24 @@
 Wraps \code{\link[httr:authenticate]{httr::authenticate()}} for convenience.
 See \code{\link[=get_pass2]{get_pass2()}} for details.}
 \usage{
-authenticate2(user, type = "basic", service, keyring = NULL, env_var = NULL)
+authenticate2(user, password = NULL, type = "basic", service, keyring = NULL)
 }
 \arguments{
 \item{user}{user name}
+
+\item{password}{password}
 
 \item{type}{type of HTTP authentication.  Should be one of the following
 types supported by Curl: basic, digest, digest_ie, gssnegotiate,
 ntlm, any.  It defaults to "basic", the most common type.}
 
-\item{service}{\verb{[character(1)]} giving the service to authenticate against, such as \code{"www.foo.com"}.
-Used for retrieving from, and storing the secret to they \code{keyring}.
-If a longer URL is provided, the domain is extracted using \code{\link[urltools:domain]{urltools::domain()}}, which is the conventional name for storing secrets (for example, \code{"www.fooservice.com"}.).}
+\item{service}{\verb{[character(1)]} giving the service to authenticate against with \code{user} and \code{password}, for example \code{"foo-service.com"}.
+Also used to retrieve from and store the password in \code{keyring}.
+If a longer URL is provided, the domain is extracted using \code{\link[urltools:domain]{urltools::domain()}}, which is the conventional name for storing secrets (for example, \code{"foo-service.com"}, not \code{"https://foo-service.com/api"}).}
 
 \item{keyring}{For systems that support multiple keyrings, specify
 the name of the keyring to use here. If \code{NULL}, then the default
 keyring is used. See also \code{\link[keyring:has_keyring_support]{has_keyring_support()}}.}
-
-\item{env_var}{\verb{[character(1)]} giving the key (name) to the environment variable under which the password is stored.
-Recommended only when the environment variable is declared in an encrypted form, and when it is redacted from the logs.
-Use with extreme caution.
-Defaults to \code{NULL}, in which case the password is prompted.}
 }
 \description{
 Use http authentication from environment variable, keychain or prompt

@@ -4,27 +4,35 @@
 \alias{get_pass2}
 \title{Get a password from an environment variable, keychain or prompt}
 \usage{
-get_pass2(user, service, keyring = NULL, env_var = NULL)
+get_pass2(user, password = NULL, service, keyring = NULL)
 }
 \arguments{
-\item{user}{user name}
+\item{user}{\verb{[character(1)]} giving the username to authenticate with, for example \code{"jane"}.
+Also used to retrieve from and store the password in \code{keyring}.}
 
-\item{service}{\verb{[character(1)]} giving the service to authenticate against, such as \code{"www.foo.com"}.
-Used for retrieving from, and storing the secret to they \code{keyring}.
-If a longer URL is provided, the domain is extracted using \code{\link[urltools:domain]{urltools::domain()}}, which is the conventional name for storing secrets (for example, \code{"www.fooservice.com"}.).}
+\item{password}{\verb{[character(1)]} giving the password.
+Use this to substitute in an environment variable such as \code{Sys.getenv("SECRET")}.
+Recommended only when the environment variable is declared in an encrypted form, and when it is redacted from the logs.
+\strong{Do not expose your passwords in scripts or the R console.}
+Defaults to \code{NULL}, in which case the \code{keyring} is used.}
+
+\item{service}{\verb{[character(1)]} giving the service to authenticate against with \code{user} and \code{password}, for example \code{"foo-service.com"}.
+Also used to retrieve from and store the password in \code{keyring}.
+If a longer URL is provided, the domain is extracted using \code{\link[urltools:domain]{urltools::domain()}}, which is the conventional name for storing secrets (for example, \code{"foo-service.com"}, not \code{"https://foo-service.com/api"}).}
 
 \item{keyring}{For systems that support multiple keyrings, specify
 the name of the keyring to use here. If \code{NULL}, then the default
 keyring is used. See also \code{\link[keyring:has_keyring_support]{has_keyring_support()}}.}
-
-\item{env_var}{\verb{[character(1)]} giving the key (name) to the environment variable under which the password is stored.
-Recommended only when the environment variable is declared in an encrypted form, and when it is redacted from the logs.
-Use with extreme caution.
-Defaults to \code{NULL}, in which case the password is prompted.}
 }
 \description{
-If \code{env_var} is found, it's value is used as a password.
-If \code{env_var} is unset (\code{""}) or if \code{env_var} is \code{NULL}, a password matching \code{user} and \code{service} in \code{keyring} is used.
-If no password in the \code{keyring} is found, the keychain unavailable or locked but the session is interactive, a prompt is opened.
+Gets a password, in this order, from:
+}
+\details{
+\enumerate{
+\item \code{password}, unless it is \code{NULL} or \code{""} as for an unset variable.
+\item a password matching \code{user} and \code{service} in the system's keychain \code{keyring}.
+\item an interactive prompt.
+}
+
 Otherwise, an error is thrown.
 }

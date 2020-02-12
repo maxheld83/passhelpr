@@ -1,41 +1,47 @@
 #' Get a password from an environment variable, keychain or prompt
 #'
-#' If `env_var` is found, it's value is used as a password.
-#' If `env_var` is unset (`""`) or if `env_var` is `NULL`, a password matching `user` and `service` in `keyring` is used.
-#' If no password in the `keyring` is found, the keychain unavailable or locked but the session is interactive, a prompt is opened.
+#' Gets a password, in this order, from:
+#'
+#' 1. `password`, unless it is `NULL` or `""` as for an unset variable.
+#' 2. a password matching `user` and `service` in the system's keychain `keyring`.
+#' 3. an interactive prompt.
+#'
 #' Otherwise, an error is thrown.
 #'
-#' @inheritParams httr::authenticate
+#' @param user `[character(1)]` giving the username to authenticate with, for example `"jane"`.
+#' Also used to retrieve from and store the password in `keyring`.
 #'
-#' @param service `[character(1)]` giving the service to authenticate against, such as `"www.foo.com"`.
-#' Used for retrieving from, and storing the secret to they `keyring`.
-#' If a longer URL is provided, the domain is extracted using [urltools::domain()], which is the conventional name for storing secrets (for example, `"www.fooservice.com"`.).
+#' @param password `[character(1)]` giving the password.
+#' Use this to substitute in an environment variable such as `Sys.getenv("SECRET")`.
+#' Recommended only when the environment variable is declared in an encrypted form, and when it is redacted from the logs.
+#' **Do not expose your passwords in scripts or the R console.**
+#' Defaults to `NULL`, in which case the `keyring` is used.
+#'
+#' @param service `[character(1)]` giving the service to authenticate against with `user` and `password`, for example `"foo-service.com"`.
+#' Also used to retrieve from and store the password in `keyring`.
+#' If a longer URL is provided, the domain is extracted using [urltools::domain()], which is the conventional name for storing secrets (for example, `"foo-service.com"`, not `"https://foo-service.com/api"`).
 #'
 #' @inheritParams keyring::key_set_with_value
 #'
-#' @param env_var `[character(1)]` giving the key (name) to the environment variable under which the password is stored.
-#' Recommended only when the environment variable is declared in an encrypted form, and when it is redacted from the logs.
-#' Use with extreme caution.
-#' Defaults to `NULL`, in which case the password is prompted.
-#'
 #' @export
 
-get_pass2 <- function(user, service, keyring = NULL, env_var = NULL) {
+get_pass2 <- function(user, password = NULL, service, keyring = NULL) {
   # prep and input validation
   checkmate::assert_string(x = user, null.ok = FALSE)
+  checkmate::assert_string(x = password, null.ok = TRUE)
   checkmate::assert_string(x = service, null.ok = FALSE)
   # this gives the canonical way to store passwords under
   service <- urltools::domain(x = service)
-  checkmate::assert_string(x = env_var, null.ok = TRUE)
 
   # body
-  if (!is.null(env_var)) {
-    usethis::ui_info(
-      "Trying to get password from environment variable {env_var} ..."
-    )
-    if (can_pass_from_env_var(env_var = env_var)) {
-      usethis::ui_done("Getting password from environment variable {env_var}.")
-      return(invisible(Sys.getenv(env_var)))
+  if (!is.null(password)) {
+    if (password != "") {
+      return(invisible(password))
+    } else {
+      usethis::ui_oops(c(
+        usethis::ui_code(password), "was empty.",
+        "Perhaps the environment variable was unset."
+      ))
     }
   }
   usethis::ui_info("Trying to get password from system keychain ...")
@@ -92,17 +98,6 @@ get_pass2 <- function(user, service, keyring = NULL, env_var = NULL) {
   }
   usethis::ui_done("Getting password from keychain.")
   invisible(keyring::key_get(service = service, keyring = keyring, username = user))
-}
-
-can_pass_from_env_var <- function(env_var) {
-  if (Sys.getenv(env_var) == "") {
-    usethis::ui_oops(
-      "Could not get password from environment variable {env_var} because it was unset.",
-    )
-    FALSE
-  } else {
-    TRUE
-  }
 }
 
 can_keyring_system <- function() {

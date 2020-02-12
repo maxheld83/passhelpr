@@ -1,14 +1,22 @@
 test_that("password returns invisibly", {
   expect_invisible(call = {
-    get_pass2(user = "foo", service = "bar", env_var = "PATH")
+    get_pass2(user = "doesnotexist", password = "bar", service = "foo-service.com")
   })
 })
 test_that("password from env_var", {
   checkmate::expect_character(
-    get_pass2(user = "foo", service = "bar", env_var = "PATH")
+    get_pass2(
+      user = "doesnotexist",
+      password = Sys.getenv("PATH"),
+      service = "foo-service.com"
+    )
   )
   expect_error(object = {
-    get_pass2(user = "foo", service = "bar", env_var = "asdasdasd")
+    get_pass2(
+      user = "doesnotexist",
+      password = Sys.getenv("DOESNOTEXISTASDASD"),
+      service = "foo-service.com"
+    )
   })
 })
 test_that("password from GitHub Actions", {
@@ -16,9 +24,9 @@ test_that("password from GitHub Actions", {
   expect_equal(
     # password for the below keyring is also foo
     object = get_pass2(
-      user = "info@maxheld.de",
-      service = "testing.maxheld.de",
-      env_var = "{{ secrets.EXAMPLE_SECRET }}"
+      user = "doesnotexist",
+      password = "${{ secrets.EXAMPLE_SECRET }}",
+      service = "foo-service.com"
     ),
     expected = "baz"
   )
@@ -31,14 +39,14 @@ test_that("password from keychain", {
   expect_equal(
     # password for the below keyring is also foo
     object = get_pass2(
-      user = "info@maxheld.de",
-      service = "testing.maxheld.de",
-      keyring = "passhelpr-testing2"
+      user = "bob",
+      service = "foo-service.com",
+      keyring = "passhelpr-testing3"
     ),
     expected = "foo"
   )
 })
 test_that("password from prompt", {
   # because this does not work interactively
-  expect_error(object = get_pass2(user = "foo", service = "bar"))
+  expect_error(object = get_pass2(user = "doesnotexist", service = "foo-service.com"))
 })
