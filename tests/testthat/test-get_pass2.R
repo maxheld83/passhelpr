@@ -11,6 +11,18 @@ test_that("password from env_var", {
     get_pass2(user = "foo", service = "bar", env_var = "asdasdasd")
   })
 })
+test_that("password from GitHub Actions", {
+  skip_if_not(condition = file.exists("/github/workflow/event.json"))
+  expect_equal(
+    # password for the below keyring is also foo
+    object = get_pass2(
+      user = "info@maxheld.de",
+      service = "testing.maxheld.de",
+      env_var = "{{ secrets.EXAMPLE_SECRET }}"
+    ),
+    expected = "baz"
+  )
+})
 test_that("password from keychain", {
   skip_if_not(
     condition = Sys.info()["nodename"] == "Maximilians-MBP",

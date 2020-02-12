@@ -26,7 +26,8 @@ Let's say you need to access an API from `foo-service.com` in your script which 
 Your username is `jane@foo-service.com` and your password is `bar` (bad, I know).
 You want your script to work on your local development machine, but without entering your password on every run, so you'd like the password to be saved in your system keychain.
 You also want it to work on a cloud service, so you store your password as a secret environment variable in the cloud service UI.
-For example, you set `${{secrets.FOO_SERVICE_PW))}}` to `bar` using [GitHub Actions secret environment variables](https://help.github.com/en/actions/configuring-and-managing-workflows/creating-and-storing-encrypted-secrets).
+For example, you set a secret environment variable `FOO_SERVICE_PW` to `bar` using [GitHub Actions secret environment variables](https://help.github.com/en/actions/configuring-and-managing-workflows/creating-and-storing-encrypted-secrets).
+On GitHub Actions, you can retrieve this secrets as `${{secrets.FOO_SERVICE_PW))}}`.
 
 Depending on where your script is running, and whether you've authenticated before, you need to retrieve your password `bar` from different places.
 
@@ -36,7 +37,7 @@ Depending on where your script is running, and whether you've authenticated befo
 passhelpr::get_pass2(
   user = "jane@foo-service.com", 
   service = "foo-service.com", 
-  env.var = "${{secrets.FOO_SERVICE_PW}}"
+  env.var = "{{secrets.FOO_SERVICE_PW}}"
 )
 ```
 
