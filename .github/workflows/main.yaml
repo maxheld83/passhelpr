@@ -25,9 +25,11 @@ jobs:
       - name: Check Package
         run: Rscript -e "rcmdcheck::rcmdcheck(error_on = 'error', check_dir = 'check')"
         env:
-          EXAMPLE_SECRET: "baz"
+          EXAMPLE_SECRET: ${{ secrets.EXAMPLE_SECRET }}
       - name: Run Code Coverage
         run: Rscript -e "covr::codecov(quiet = FALSE, commit = '$GITHUB_SHA', branch = '$GITHUB_REF', token = '${{ secrets.CODECOV_TOKEN }}')"
+        env:
+          EXAMPLE_SECRET: ${{ secrets.EXAMPLE_SECRET }}
       - name: Document Package
         run: |
           Rscript -e "pkgdown::build_site(override = list(devel = FALSE, external = FALSE))"
