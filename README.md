@@ -39,20 +39,20 @@ passhelpr::get_pass2(
 In this order, `get_pass2()` will:
 
 1. **Return `password`**, unless it is `NULL` or `""`, as would be the case for an unset environment variable.
-  You can use this to get your password from an environment variable, by calling `Sys.getenv()`.
-  
-  You can use this for authenticating your script from a server, or in another non-interactive setting, where you cannot type in a password.
-  Make sure that you safely declare the environment variable, and be aware that it may be accessible to other processes.
-  
-  You can, of course, also just pass your password, though that would defeat the purpose of this package.
-  Remember not to store sensitive passwords in your scripts or enter it at the R console without a masked prompt.
+    You can use this to get your password from an environment variable, by calling `Sys.getenv()`.
+    
+    You can use this for authenticating your script from a server, or in another non-interactive setting, where you cannot type in a password.
+    Make sure that you safely declare the environment variable, and be aware that it may be accessible to other processes.
+    
+    You can, of course, also just pass your password, though that would defeat the purpose of this package.
+    Remember not to store sensitive passwords in your scripts or enter it at the R console without a masked prompt.
 2. If `password` is `NULL` or `""`, `get_pass2()` will **check the operating system keychain**.
-  If necessary, you will be asked to unlock the `keyring` on your system keychain.
-  The system keychain offers better security than environment variables, because secrets are stored encrypted and access can be more tightly controlled.
-  If there is a password for `service` and `user` in the `keyring`, it will be returned.
-  `keyring=NULL` will use your default system keyring (typically something like "login").
+    If necessary, you will be asked to unlock the `keyring` on your system keychain.
+    The system keychain offers better security than environment variables, because secrets are stored encrypted and access can be more tightly controlled.
+    If there is a password for `service` and `user` in the `keyring`, it will be returned.
+    `keyring=NULL` will use your default system keyring (typically something like "login").
 3. If there is no matching password, or if the keychain cannot be used, you will be **prompted** to enter your password.
-  The password will be saved in the `keyring` under `service` and `user` for future use.
+    The password will be saved in the `keyring` under `service` and `user` for future use.
 
 The function is pretty chatty and keeps you informed on what is happening
 
