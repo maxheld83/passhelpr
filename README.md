@@ -10,17 +10,6 @@
 This packages gets passwords for [basic access authentication](https://en.wikipedia.org/wiki/basic_access_authentication) (BA, using username and password).
 In this order, it gets them from environment variables, system keychains and interactive prompts.
 
-To access APIs from scripts, key and token authentication are both more convenient and secure than BA (keys and tokens can be tightly scoped and revoked).
-You should use it over this whenever you can.
-However, sometimes, only BA is available 😒.
-
-Using BA can be a bit cumbersome, especially when developing on different computers and servers.
-The helpers in this package make BA a little easier to use, by looking in several places in turn.
-
-They loosely follow {httr}'s advice on [managing secrets](https://httr.r-lib.org/articles/secrets.html).
-
-This package is a very thin wrapper around [{httr}](https://httr.r-lib.org), [{getPass}](https://cran.r-project.org/web/packages/getPass/index.html) and [{keyring}](https://github.com/r-lib/keyring).
-
 
 ## Installation
 
@@ -33,8 +22,15 @@ remotes::install_github("maxhed83/passhelpr")
 
 ## Usage
 
-You can use `getpass2()` wherever you need a password for BA.
-It will return the password invisibly.
+Let's say you need to access an API from `foo-service.com` in your script which only offers BA.
+Your username is `jane@foo-service.com` and your password is `bar` (bad, I know).
+You want your script to work on your local development machine, but without entering your password on every run, so you'd like the password to be saved in your system keychain.
+You also want it to work on a cloud service, so you store your password as a secret environment variable in the cloud service UI.
+For example, you set `${{secrets.FOO_SERVICE_PW))}}` to `bar` using [GitHub Actions secret environment variables](https://help.github.com/en/actions/configuring-and-managing-workflows/creating-and-storing-encrypted-secrets).
+
+Depending on where your script is running, and whether you've authenticated before, you need to retrieve your password `bar` from different places.
+
+`get_pass2()` figures it out for you, and returns the password invisibly.
 
 ```r
 passhelpr::get_pass2(
@@ -43,8 +39,6 @@ passhelpr::get_pass2(
   env.var = "${{secrets.FOO_SERVICE_PW}}"
 )
 ```
-
-This call should work on your local machine, someone elses computer and a CI server with minimal setup.
 
 In this order, `get_pass2()` will:
 
@@ -63,3 +57,16 @@ In this order, `get_pass2()` will:
   The password will be saved in the `keyring` under `service` and `user` for future use.
 
 The function is pretty chatty and keeps you informed on what is happening
+
+
+## Caveats
+
+To access APIs from scripts, key and token authentication are both more convenient and secure than BA (keys and tokens can be tightly scoped and revoked).
+You should use instead of BA whenever you can.
+
+
+## Links
+
+The package closely follows {httr}'s advice on [managing secrets](https://httr.r-lib.org/articles/secrets.html).
+
+The package is a very thin wrapper around [{httr}](https://httr.r-lib.org), [{getPass}](https://cran.r-project.org/web/packages/getPass/index.html) and [{keyring}](https://github.com/r-lib/keyring).
